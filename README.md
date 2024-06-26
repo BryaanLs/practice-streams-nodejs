@@ -6,11 +6,6 @@ Nodejs streams:
  - Pipeline
  - Pipe
  - Readable
+ - Transoform 
  - Writable
  - fs methods (including streams)
-
-Express:
- - Create API's with nodejs
- - Folder structure to projects with express
- - Middleware uses
- 
