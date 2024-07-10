@@ -4,16 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
-    "baixar": "YTDL_NO_UPDATE=true node index.js "
+    "start": "tsx watch ",
+    "baixar": "YTDL_NO_UPDATE=true tsx ./src/lib/video-download/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemon": "^3.1.0",
     "ytdl-core": "^4.11.5"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@tsconfig/node21": "^21.0.3",
+    "@types/node": "^20.14.10",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3"
+  }
 }
