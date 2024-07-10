@@ -2,31 +2,39 @@ import { createWriteStream } from "fs";
 import { pipeline } from "stream/promises";
 import ytdl from "@distube/ytdl-core";
 import path from "path";
+
 type Folders = "GO" | "DevOps" | "React Native" | "React" | "Node";
 async function downloadVideo(
   link: string,
-  nameVideo: string,
-  folderName?: Folders
+  folderName?: Folders,
+  nameVideo?: string
 ): Promise<void> {
-  const videoPath = path.resolve(
-    "src",
-    "lib",
-    "video-download",
-    "downloads",
-    folderName ?? "videos",
-    `${nameVideo}.mp4`
-  );
-
-  const video = createWriteStream(videoPath);
   try {
+    const { player_response, ...infos } = await ytdl.getBasicInfo(link);
+    const videoPath = path.resolve(
+      "src",
+      "lib",
+      "video-download",
+      "downloads",
+      folderName ?? "videos",
+      `${player_response.videoDetails.title}.mp4`
+    );
+    const format = infos.formats.find((item) => {
+      if (
+        item.qualityLabel === "1080p60" &&
+        item.mimeType?.includes("video/mp4")
+      )
+        return item;
+    });
+    const video = createWriteStream(videoPath);
     const dowloadOptions: ytdl.downloadOptions = {
       filter: "audioandvideo",
       quality: "highestvideo",
+      format: format,
     };
 
     await pipeline(ytdl(link, dowloadOptions), video);
-
-    console.log(`downloads/${folderName}/${nameVideo}.mp4`);
+    console.log(`Download concluido: ${player_response.videoDetails.title}`);
   } catch (err) {
     if (err instanceof Error) {
       console.log("Erro no download");
@@ -65,20 +73,13 @@ const devopsClass: Array<string> = [
   "",
   "https://youtu.be/--_m6ibt3AY",
 ];
+
 const promises = [
-  goClass.map((link, i) => downloadVideo(link, `nlw-go-aula${i + 1}`, "GO")),
-  reactNativeClass.map((link, i) =>
-    downloadVideo(link, `nlw-react-native-aula${i + 1}`, "React Native")
-  ),
-  reactjsClass.map((link, i) =>
-    downloadVideo(link, `nlw-react-aula${i + 1}`, "React")
-  ),
-  nodejsClass.map((link, i) =>
-    downloadVideo(link, `nlw-nodejs-aula${i + 1}`, "Node")
-  ),
-  devopsClass.map((link, i) =>
-    downloadVideo(link, `nlw-devops-aula${i + 1}`, "DevOps")
-  ),
+  goClass.map((link) => downloadVideo(link, "GO")),
+  reactNativeClass.map((link) => downloadVideo(link, "React Native")),
+  reactjsClass.map((link) => downloadVideo(link, "React")),
+  nodejsClass.map((link) => downloadVideo(link, "Node")),
+  devopsClass.map((link) => downloadVideo(link, "DevOps")),
 ];
 
 await Promise.all(promises);
