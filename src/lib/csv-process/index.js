@@ -1,3 +1,6 @@
+//! Work In Progress: This task do not finished
+//TODO: Convertion js to ts and switch pipe for pipeline
+//TODO: Download dataset to manipule data with streams
 import { createReadStream, createWriteStream } from "fs";
 import { Transform } from "stream";
 const read = createReadStream("./input.csv");

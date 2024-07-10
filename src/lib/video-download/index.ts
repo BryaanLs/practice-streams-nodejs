@@ -6,14 +6,14 @@ type Folders = "GO" | "DevOps" | "React Native" | "React" | "Node";
 async function downloadVideo(
   link: string,
   nameVideo: string,
-  folderName: Folders
+  folderName?: Folders
 ): Promise<void> {
   const videoPath = path.resolve(
     "src",
     "lib",
     "video-download",
     "downloads",
-    folderName,
+    folderName ?? "videos",
     `${nameVideo}.mp4`
   );
 
@@ -26,7 +26,7 @@ async function downloadVideo(
 
     await pipeline(ytdl(link, dowloadOptions), video);
 
-    console.log("Download concluido");
+    console.log(`downloads/${folderName}/${nameVideo}.mp4`);
   } catch (err) {
     if (err instanceof Error) {
       console.log("Erro no download");
@@ -65,29 +65,22 @@ const devopsClass: Array<string> = [
   "",
   "https://youtu.be/--_m6ibt3AY",
 ];
-
-await Promise.all(
-  goClass.map((link, i) => downloadVideo(link, `nlw-devops-aula${i + 1}`, "GO"))
-);
-await Promise.all(
+const promises = [
+  goClass.map((link, i) => downloadVideo(link, `nlw-go-aula${i + 1}`, "GO")),
   reactNativeClass.map((link, i) =>
-    downloadVideo(link, `nlw-devops-aula${i + 1}`, "React Native")
-  )
-);
-await Promise.all(
+    downloadVideo(link, `nlw-react-native-aula${i + 1}`, "React Native")
+  ),
   reactjsClass.map((link, i) =>
-    downloadVideo(link, `nlw-devops-aula${i + 1}`, "React")
-  )
-);
-await Promise.all(
+    downloadVideo(link, `nlw-react-aula${i + 1}`, "React")
+  ),
   nodejsClass.map((link, i) =>
-    downloadVideo(link, `nlw-devops-aula${i + 1}`, "Node")
-  )
-);
-await Promise.all(
+    downloadVideo(link, `nlw-nodejs-aula${i + 1}`, "Node")
+  ),
   devopsClass.map((link, i) =>
     downloadVideo(link, `nlw-devops-aula${i + 1}`, "DevOps")
-  )
-);
+  ),
+];
+
+await Promise.all(promises);
 
 // await downloadVideo("https://www.youtube.com/watch?v=_Td7JjCTfyc", "saida");
