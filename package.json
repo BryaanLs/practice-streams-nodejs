@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@distube/ytdl-core": "^4.13.5",
     "ytdl-core": "^4.11.5"
   },
   "type": "module",
